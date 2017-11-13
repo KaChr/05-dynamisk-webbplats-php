@@ -1,0 +1,21 @@
+{
+    "": {
+        "controller": "Default",
+        "method": "start"
+    },
+    "login": {
+        "controller": "User",
+        "method": "login"
+    },
+    "posts": {
+        "controller": "Post",
+        "method": "getAll"
+    },
+    "post/:id": {
+        "controller": "Post",
+        "method": "getOne",
+            "params": {
+                "id": "number"
+            }
+    }
+}
