@@ -11,6 +11,13 @@
         "controller": "Post",
         "method": "getAll"
     },
+    "posts/:page": {
+        "controller": "Post",
+        "method": "getAllWithPage",
+        "params": {
+          "page": "number"
+        }
+      },
     "post/:id": {
         "controller": "Post",
         "method": "getOne",

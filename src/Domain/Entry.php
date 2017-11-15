@@ -2,7 +2,7 @@
 
 namespace Blog\Domain;
 
-class Post {
+class Entry {
     
     private $post_nr;
     private $post_title;
@@ -10,6 +10,7 @@ class Post {
     private $post_date;
     private $post_tags;
     private $post_text;
+    private $type;
 
     public function getNumber(): int
     {
@@ -39,5 +40,10 @@ class Post {
     public function getText(): string
     {
         return $this->post_text;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
     }
 }

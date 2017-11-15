@@ -18,5 +18,5 @@ class UserModel extends AbstractModel
         } else {
             return [];
         }
-    }
+    } 
 }

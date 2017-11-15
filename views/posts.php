@@ -9,6 +9,7 @@
                         <?php echo $post->getTitle(); ?>
                     </a>
                 </h2>
+                <span><?php echo $post->getType(); ?></span>
                 <p class="blog-post-meta"> <?php echo $post->getDate(); ?> <a href="#"><?php echo $post->getAuthor(); ?></a></p>
                 <p class="tags"><?php echo $post->getTags() ?></p>
                 <p><?php echo $post->getText() ?></p>
