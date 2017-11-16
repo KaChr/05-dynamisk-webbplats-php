@@ -7,9 +7,9 @@ use Blog\Controllers\CustomerController;
 
 class Router {
     private $routeMap;
-    private static $regexPatters = [
+    private static $regexPatterns = [
         'number' => '\d+',
-        'string' => '\w'
+        'string' => '\w+'
     ];
 
     public function __construct() {
@@ -32,9 +32,9 @@ class Router {
     }
 
     private function getRegexRoute(string $route, array $info): string {
-        if (isset($info['params'])) {
+        if (isset($info['params'])) {            
             foreach ($info['params'] as $name => $type) {
-                $route = str_replace(':' . $name, self::$regexPatters[$type], $route);
+                $route = str_replace(':' . $name, self::$regexPatterns[$type], $route);
             }
         }
 
@@ -61,6 +61,7 @@ class Router {
         }
 
         $params = $this->extractParams($route, $path);
+
         return call_user_func_array([$controller, $info['method']], $params);
     }
 

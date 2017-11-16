@@ -4,18 +4,38 @@ namespace Blog\Domain;
 
 class User
 {
-    private $id;
+    private $user_id;
     private $firstname;
     private $surname;
     private $email;
-
-    public function __construct($id, $firstname, $surname, $email)
+    
+    public function getId()
     {
-        $this->id = $id;
-        $this->firstname = $firstname;
-        $this->surname = $surname;
+        return $this->user_id;
+    }
+    
+    public function getFirstname()
+    {
+        return $this->firstname;
+    }
+    
+    public function getSurname()
+    {
+        return $this->surname;
+    }
+
+    public function getFullName()  //Här
+    {
+        return $this->firstname . ' ' . $this->surname;
+    }
+    
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function setEmail($email)
+    {
         $this->email = $email;
     }
-    // ...
 }
-?>

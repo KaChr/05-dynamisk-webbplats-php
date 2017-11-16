@@ -1,11 +1,10 @@
 <?php
 
-namespace Blog\Domain\Post;
+namespace Blog\Domain\Posts;
 
-use Blog\Domain\Post;
 use Blog\Domain\Entry;
 
-class Lifestyle extends Entry implements Post 
+class Lifestyle extends Entry
 {
     public function getType()
     {

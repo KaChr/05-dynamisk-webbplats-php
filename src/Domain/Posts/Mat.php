@@ -1,11 +1,10 @@
 <?php
 
-namespace Blog\Domain\Post;
+namespace Blog\Domain\Posts;
 
-use Blog\Domain\Post;
 use Blog\Domain\Entry;
 
-class Mat extends Entry implements Post 
+class Mat extends Entry
 {
     public function getType()
     {

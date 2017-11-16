@@ -3,10 +3,6 @@
         "controller": "Default",
         "method": "start"
     },
-    "login": {
-        "controller": "User",
-        "method": "login"
-    },
     "posts": {
         "controller": "Post",
         "method": "getAll"
@@ -17,12 +13,31 @@
         "params": {
           "page": "number"
         }
-      },
+    },
     "post/:id": {
         "controller": "Post",
         "method": "getOne",
             "params": {
                 "id": "number"
             }
+    },
+    "posts/search": {
+        "controller": "Post",
+        "method": "search"
+    },
+    "type/:t":{
+        "controller": "Post",
+        "method": "getByType",
+        "params": {
+            "t": "string"
+        }
+    },
+    "login": {
+        "controller": "User",
+        "method": "login"
+    },
+    "dashboard": {
+        "controller": "Post",
+        "method": "createPost"
     }
 }

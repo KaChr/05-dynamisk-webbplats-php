@@ -1,11 +1,10 @@
 <?php
 
-namespace Blog\Domain\Post;
+namespace Blog\Domain\Posts;
 
-use Blog\Domain\Post;
 use Blog\Domain\Entry;
 
-class Fundering extends Entry implements Post 
+class Fundering extends Entry 
 {
     public function getType()
     {

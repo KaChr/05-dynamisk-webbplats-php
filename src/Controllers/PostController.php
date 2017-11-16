@@ -4,11 +4,10 @@ namespace Blog\Controllers;
 
 use Blog\Models\PostModel;
 use Blog\Exceptions\NotFoundException;
-// use Blog\Controllers\AbstractController;
 
 class PostController extends AbstractController
 {
-    const PAGE_LENGTH = 10;
+    const PAGE_LENGTH = 3;
 
     public function getAllWithPage($page): string
     {
@@ -31,7 +30,6 @@ class PostController extends AbstractController
         return $this->getAllWithPage(1);
     }
 
-
     public function getOne(int $id) {
         $postModel = new PostModel();
         $post = $postModel->getOne($id);
@@ -42,4 +40,43 @@ class PostController extends AbstractController
 
         return $this->render('views/post.php', $properties);
     }
+
+    public function search(): string
+    {
+        $searchString = $this->request->getParams()->getString('search');
+
+        $postModel = new PostModel();
+        $posts = $postModel->search($searchString);
+
+        $properties = [
+            'posts' => $posts,
+        ];
+
+        return $this->render('views/posts.php', $properties);
+    }
+
+    public function getByType(string $type)
+    {
+        $postModel = new Postmodel();
+        $posts = $postModel->getByType($type);
+
+        $properties = [
+            'posts' => $posts
+        ];
+
+        return $this->render('views/posts.php', $properties);
+    }
+
+    // public function createPost() {
+
+    //     $properties = [
+    //         'title' => $
+    //         'author' => $
+    //         'tags' => $
+    //         'text' => $
+    //         'type' => $
+    //     ];
+
+    //     return $this->render('views/makePost.php', $properties);
+    // }
 }

@@ -10,6 +10,7 @@ class Entry {
     private $post_date;
     private $post_tags;
     private $post_text;
+    private $post_category;
     private $type;
 
     public function getNumber(): int
@@ -30,6 +31,11 @@ class Entry {
     public function getDate()
     {
         return $this->post_date;
+    }
+
+    public function getCategories(): array
+    {
+        return $this->post_categories ?? '';
     }
 
     public function getTags(): string
