@@ -2,6 +2,8 @@
  * Globals
  */
 
+ @import url('https://fonts.googleapis.com/css?family=Shadows+Into+Light');
+ 
 
  @media (min-width: 48em) {
     html {
@@ -91,6 +93,7 @@
     margin-bottom: 0;
     font-size: 2rem;
     font-weight: normal;
+    font-family: 'Shadows Into Light', cursive !important;    
   }
   .blog-description {
     font-size: 1.1rem;

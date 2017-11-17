@@ -40,17 +40,4 @@ class UserController extends AbstractController
             return $this->redirect('/dashboard');
         }
     }
-
-//     public function getAll(): string
-//     {
-//         $userModel = new UserModel();
-
-//         $users = $userModel->getAll();
-
-//         $properties = [
-//             'users' => $users
-//         ];
-
-//         return $this->render('//glöm inte', $properties);
-//     }
 }

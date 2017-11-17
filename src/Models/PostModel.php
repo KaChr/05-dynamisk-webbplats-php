@@ -15,7 +15,7 @@ class PostModel extends AbstractModel
     {
         $start = $pageLength * ($page - 1);
             
-        $query = 'SELECT * FROM posts LIMIT :page, :length';
+        $query = 'SELECT * FROM posts ORDER BY post_date DESC LIMIT :page, :length';
         $sth = $this->db->prepare($query);
         $sth->bindParam('page', $start, PDO::PARAM_INT);
         $sth->bindParam('length', $pageLength, PDO::PARAM_INT);
@@ -76,8 +76,30 @@ SQL;
         return $sth->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
     }
 
-        // public function addPost($post_nr, $post_title, $post_author, $post_tags, $post_text, $type)
-        // {
-        //     $query = 'INSERT INTO posts SET '
-        // }
+    public function getByUser(string $author)
+    {
+        $query = 'SELECT * FROM posts WHERE post_author = :author';
+        $statement = $this->db->prepare($query);
+
+        $statement->bindValue(':author', $author);
+        $statement->execute();
+
+        return $statement->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);   
+    }
+
+    public function createPost($post_title, $post_author, $post_text, $type) {
+    
+        $query = 'INSERT INTO posts (post_title, post_author, post_text, type) VALUES (:post_title, :post_author, :post_text, :type)';
+
+        $statement = $this->db->prepare($query);
+        $statement->bindValue(':post_title', $post_title);
+        $statement->bindValue(':post_author', $post_author);
+        $statement->bindValue(':post_text', $post_text);
+        $statement->bindValue(':type', $type);
+
+        $statement->execute();
+
+        return $this->db->lastInsertId();
+    }
+
     }

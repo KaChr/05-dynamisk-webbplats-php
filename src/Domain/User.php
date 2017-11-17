@@ -24,7 +24,7 @@ class User
         return $this->surname;
     }
 
-    public function getFullName()  //Här
+    public function getFullName()  
     {
         return $this->firstname . ' ' . $this->surname;
     }

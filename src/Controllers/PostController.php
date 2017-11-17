@@ -67,16 +67,34 @@ class PostController extends AbstractController
         return $this->render('views/posts.php', $properties);
     }
 
-    // public function createPost() {
+    public function getByUser(string $author) {
+        $postModel = new PostModel();
+        $posts = $postModel->getByUser($author);
 
-    //     $properties = [
-    //         'title' => $
-    //         'author' => $
-    //         'tags' => $
-    //         'text' => $
-    //         'type' => $
-    //     ];
+        $properties = [
+            'posts' => $posts
+        ];
 
-    //     return $this->render('views/makePost.php', $properties);
-    // }
+        return $this->render('views/posts.php', $properties);
+    }
+
+    public function createPost() {
+
+        if ($this->request->isPost()) {
+            $params = $this->request->getParams();
+            $postModel = new PostModel();
+             
+            $postId = $postModel->createPost(
+                $params->get('title'),
+                $params->get('author'),
+                $params->get('text'),
+                $params->get('type')
+            );
+    
+            return $this->redirect('/post/' . $postId);
+        }
+
+        return $this->render('views/makePost.php', []);
+
+    }
 }
