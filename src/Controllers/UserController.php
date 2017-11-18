@@ -40,4 +40,16 @@ class UserController extends AbstractController
             return $this->redirect('/dashboard');
         }
     }
+
+    public function logout()
+    {
+        setcookie('User', '', time()-5000, '/');
+
+        $params = [
+            'message' => 'Nu är du utloggad.',
+            'messagetype' => 'success'
+        ];
+
+        $this->redirect('/');
+    }
 }

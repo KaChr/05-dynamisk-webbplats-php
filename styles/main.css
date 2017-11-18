@@ -79,6 +79,12 @@
     border-left: .3rem solid transparent;
   }
   
+  .tags .tag {
+    display: inline-block;
+    padding: 4px 8px;
+    background-color: #428bca;
+    border-radius: 4px; 
+  }
   
   /*
    * Blog name and description

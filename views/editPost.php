@@ -7,13 +7,7 @@
         <option value="Mat">Mat</option>
         <option value="Uppfinning">Uppfinning</option>
     </select>
-    
-    <select name="tags[]" multiple>
-    <?php foreach($tags as $tag): ?>
-        <option value="<?php echo $tag['tag_id']; ?>"><?php echo $tag['tag_name']; ?></option>
-    <?php endforeach; ?>
-    </select>
-    
+    <input placeholder="Taggar" name="" value="" type="" />
     <textarea placeholder="Skriv text..." name="text">
         
     </textarea>

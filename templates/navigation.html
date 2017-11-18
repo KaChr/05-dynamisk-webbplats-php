@@ -16,10 +16,16 @@
                 <a class="nav-link" href="#">About</a>
             </nav>
         </div>
+        <?php if (! isset ($_COOKIE['User'])): ?>
         <form action="/login" method="POST">
             <label for="email">Email</label>
             <input type="email" name="email" placeholder="Din email"/>
             <button type="submit" class="btn btn-primary">Logga in</button>
         </form>
+        <?php else: ?>
+        <form action="/logout" method="POST">
+            <button type="submit" class="btn btn-primary">Logga ut</button>
+        </form>
+        <?php endif; ?>
     </div>
   

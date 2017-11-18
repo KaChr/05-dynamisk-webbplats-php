@@ -1,7 +1,7 @@
 {
     "": {
-        "controller": "Default",
-        "method": "start"
+        "controller": "Post",
+        "method": "getAll"
     },
     "posts": {
         "controller": "Post",
@@ -36,8 +36,27 @@
         "controller": "User",
         "method": "login"
     },
+    "logout":{
+        "controller": "User",
+        "method": "logout"
+    },
     "dashboard": {
         "controller": "Post",
         "method": "createPost"
+    },
+    "tags/:id": {
+        "controller": "Post",
+        "method": "getByTag",
+        "params": {
+            "id": "number"
+        }
+    },
+    "update/post": {
+        "controller": "Post",
+        "method": "editPost"
+    },
+    "delete/post": {
+        "controller": "Post",
+        "method": "deletePost"
     }
 }

@@ -8,7 +8,7 @@ class Entry {
     private $post_title;
     private $post_author;
     private $post_date;
-    private $post_tags;
+    private $tags = [];
     private $post_text;
     private $type;
 
@@ -35,6 +35,15 @@ class Entry {
     public function getTags(): string
     {
         return $this->post_tags ?? '';
+    }
+
+    public function getTagsAsArray(): array {
+        if (!empty ($this->tags)) {
+            return explode(',', $this->tags);
+        }
+
+        return [];
+        
     }
 
     public function getText(): string
