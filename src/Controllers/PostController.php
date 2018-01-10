@@ -14,7 +14,6 @@ class PostController extends AbstractController
         // instansiera PostModel
         $page = (int)$page;
         $postModel = new PostModel();
-        // $posts = $postModel->getAllWithPage($page, self::PAGE_LENGTH);
         $posts = $postModel->getAllWithTags($page, self::PAGE_LENGTH);
         $tags = $postModel->getAllTags();
 
@@ -31,16 +30,10 @@ class PostController extends AbstractController
     public function getAll(): string
     {
         return $this->getAllWithPage(1);
-
-        // $postModel = new PostModel();
-
-        // $posts = $postModel->getAllWithTags();
-
-        // var_dump($posts);
-        // die;
     }
 
-    public function getOne(int $id) {
+    public function getOne(int $id)
+    {
         $postModel = new PostModel();
         $post = $postModel->getOne($id);
         $tags = $postModel->getAllTags();
@@ -97,7 +90,8 @@ class PostController extends AbstractController
         return $this->render('views/posts.php', $properties);
     }
 
-    public function getByUser(string $author) {
+    public function getByUser(string $author)
+    {
         $postModel = new PostModel();
         $posts = $postModel->getByUser($author);
         $tags = $postModel->getAllTags();
@@ -110,14 +104,13 @@ class PostController extends AbstractController
         return $this->render('views/posts.php', $properties);
     }
 
-    public function createPost() {
-
+    public function createPost()
+    {
         if ($this->request->isPost()) {
             $params = $this->request->getParams();
             $postModel = new PostModel();
             $tags = $postModel->getAllTags();
 
-             
             $postId = $postModel->createPost(
                 $params->get('title'),
                 $params->get('author'),
@@ -125,24 +118,23 @@ class PostController extends AbstractController
                 $params->get('type'),
                 $params->get('tags')
             );
-    
+
             return $this->redirect('/post/' . $postId);
         }
 
         $postModel = new PostModel();
 
-        $tags = $postModel->getAllTags(); 
+        $tags = $postModel->getAllTags();
 
-        return $this->render('views/makePost.php', ['tags' => $tags]);
-
+        return $this->render('views/admin/makePost.php', ['tags' => $tags]);
     }
 
-    public function editPost() {
-        
+    public function editPost()
+    {
         if ($this->request->isPost()) {
             $params = $this->request->getParams();
             $postModel = new PostModel();
-                
+
             $postId = $postModel->editPost(
                 $params->get('id'),
                 $params->get('title'),
@@ -151,15 +143,15 @@ class PostController extends AbstractController
                 $params->get('type'),
                 $params->get('tags')
             );
-    
+
             return $this->redirect('/');
         }
 
         return $this->redirect('/');
-
     }
 
-    public function deletePost() {
+    public function deletePost()
+    {
         if ($this->request->isPost()) {
             $params = $this->request->getParams();
             $postModel = new PostModel();

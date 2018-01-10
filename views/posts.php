@@ -2,11 +2,14 @@
 
     <div class="row">
         <div class="col-sm-8 blog-main">
-        <?php foreach($posts as $post): ?> 
+        <?php foreach($posts as $post): ?>
             <div class="blog-post">
                 <h2 class="blog-post-title">
                     <a href="/post/<?php echo $post->getNumber(); ?>">
                         <?php echo $post->getTitle(); ?>
+                    </a>
+                    <a href="/update/post">
+                        <i class="fa fa-pen"></i>
                     </a>
                 </h2>
                 <span><?php echo $post->getType(); ?></span>
