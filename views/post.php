@@ -28,7 +28,7 @@
         <div class="col-sm-8 blog-main">
             <div class="blog-post">
                 <h2 class="blog-post-title"><?php echo $post->getTitle(); ?></h2>
-                <p class="blog-post-meta"> <?php echo $post->getDate(); ?> <a href="#"><?php echo $post->getAuthor(); ?></a></p>
+                <p class="blog-post-meta"> <?php echo $post->getDate(); ?> <a href="/posts/author/<?php echo $post->getAuthor(); ?>"><?php echo $post->getAuthor(); ?></a></p>
                 <p><?php echo $post->getText(); ?></p>
             </div><!-- /.blog-post -->
         </div><!-- /.blog-main -->
@@ -36,7 +36,7 @@
         <?php include_once('layout.php'); ?>
     </div><!-- /.row -->
 
-    
+
 <?php endif; ?>
 
 </div><!-- /.container -->

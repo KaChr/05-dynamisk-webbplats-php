@@ -123,6 +123,10 @@
     font-weight: normal;
     font-family: 'Shadows Into Light', cursive !important;
   }
+  .blog-title a:hover {
+    color: papayawhip;
+    text-decoration: none;
+  }
   .blog-description {
     font-size: 1.1rem;
     color: #999;
