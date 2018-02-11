@@ -8,7 +8,7 @@ use Exceptions;
 
 class UserController extends AbstractController
 {
-    public function login() 
+    public function login()
     {
         if (!$this->request->isPost()) {
             return $this->redirect('/');
@@ -16,7 +16,7 @@ class UserController extends AbstractController
 
         $params = $this->request->getParams();
 
-        if (! $params->has('email')) {
+        if (!$params->has('email')) {
             return $this->redirect('/');
         }
 
@@ -24,7 +24,7 @@ class UserController extends AbstractController
 
         $userFound = $userModel->getByEmail($params->get('email'))[0];
 
-        if (! empty($userFound)) {
+        if (!empty($userFound)) {
             $cookieUser = [
                 'fullname' => $userFound->getFullName(),
                 'email' => $userFound->getEmail(),
@@ -32,18 +32,18 @@ class UserController extends AbstractController
             ];
 
             setcookie(
-                "User", 
-                json_encode($cookieUser), 
+                "user",
+                json_encode($cookieUser),
                 time()+3600
             );  /* expire in 1 hour */
-            
+
             return $this->redirect('/dashboard');
         }
     }
 
     public function logout()
     {
-        setcookie('User', '', time()-5000, '/');
+        setcookie('user', '', time()-5000, '/');
 
         $params = [
             'message' => 'Nu är du utloggad.',

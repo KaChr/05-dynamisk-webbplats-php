@@ -17,9 +17,16 @@
     "post/:id": {
         "controller": "Post",
         "method": "getOne",
-            "params": {
-                "id": "number"
-            }
+        "params": {
+            "id": "number"
+        }
+    },
+    "posts/author/:authorId": {
+        "controller": "Post",
+        "method": "getByUser",
+        "params": {
+            "authorId": "number"
+        }
     },
     "posts/search": {
         "controller": "Post",
@@ -43,6 +50,42 @@
     "dashboard": {
         "controller": "Post",
         "method": "createPost"
+    },
+    "dashboard/post/:id/edit": {
+        "controller": "Post",
+        "method": "readPost",
+        "params": {
+            "id": "number"
+        }
+    },
+    "dashboard/tags": {
+        "controller": "Post",
+        "method": "editTags"
+    },
+    "dashboard/tags/create": {
+        "controller": "Post",
+        "method": "createTag"
+    },
+    "dashboard/tags/:id": {
+        "controller": "Post",
+        "method": "editTag",
+        "params": {
+            "id": "number"
+        }
+    },
+    "dashboard/tags/:id/update": {
+        "controller": "Post",
+        "method": "updateTag",
+        "params": {
+            "id": "number"
+        }
+    },
+    "dashboard/tags/:id/delete": {
+        "controller": "Post",
+        "method": "deleteTag",
+        "params": {
+            "id": "number"
+        }
     },
     "tags/:id": {
         "controller": "Post",

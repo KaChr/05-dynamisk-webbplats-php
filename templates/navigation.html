@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="sv">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,25 +8,63 @@
     <title>Karins blogg</title>
     <link rel="stylesheet" href="/styles/main.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote-bs4.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="blog-masthead">
         <div class="container">
             <nav class="nav blog-nav">
-                <a class="nav-link active" href="/">Home</a>
-                <a class="nav-link" href="#">About</a>
+                <a class="nav-link active" href="/">Hem</a>
+                <ul class="nav-link navbar-nav">
+                    <li class="dropdown">
+                        <?php if (!isset($_COOKIE['user'])): ?>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Logga in</b> <span class="caret"></span></a>
+                        <ul id="login-dp" class="dropdown-menu">
+                            <li>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <form class="form" role="form" method="post" action="login" accept-charset="UTF-8" id="login-nav">
+                                            <div class="form-group">
+                                                <label class="sr-only" for="exampleInputEmail2">Email</label>
+                                                <input type="email" class="form-control" id="exampleInputEmail2" placeholder="Din email" name="email" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-primary btn-block">Logga in</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <?php else: ?>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b><?php echo json_decode($_COOKIE['user'])->fullname ?></b> <span class="caret"></span></a>
+                        <ul id="login-dp" class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="/dashboard">Skapa nytt inlägg</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="/dashboard/tags">Visa taggar</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="/dashboard/tags/create">Skapa taggar</a>
+                            </li>
+                            <li>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <form class="form" role="form" method="post" action="/logout" accept-charset="UTF-8" id="login-nav">
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-primary btn-block">Logga ut</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <?php endif; ?>
+                    </li>
+                </ul>
             </nav>
         </div>
-        <?php if (! isset ($_COOKIE['User'])): ?>
-        <form action="/login" method="POST">
-            <label for="email">Email</label>
-            <input type="email" name="email" placeholder="Din email"/>
-            <button type="submit" class="btn btn-primary">Logga in</button>
-        </form>
-        <?php else: ?>
-        <form action="/logout" method="POST">
-            <button type="submit" class="btn btn-primary">Logga ut</button>
-        </form>
-        <?php endif; ?>
     </div>
-  

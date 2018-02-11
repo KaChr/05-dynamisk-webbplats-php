@@ -14,7 +14,6 @@ class PostController extends AbstractController
         // instansiera PostModel
         $page = (int)$page;
         $postModel = new PostModel();
-        // $posts = $postModel->getAllWithPage($page, self::PAGE_LENGTH);
         $posts = $postModel->getAllWithTags($page, self::PAGE_LENGTH);
         $tags = $postModel->getAllTags();
 
@@ -31,26 +30,25 @@ class PostController extends AbstractController
     public function getAll(): string
     {
         return $this->getAllWithPage(1);
-
-        // $postModel = new PostModel();
-
-        // $posts = $postModel->getAllWithTags();
-
-        // var_dump($posts);
-        // die;
     }
 
-    public function getOne(int $id) {
+    public function getOne(int $id)
+    {
         $postModel = new PostModel();
         $post = $postModel->getOne($id);
         $tags = $postModel->getAllTags();
 
-        $properties = [
-            'tags' => $tags,
-            'post' => $post[0]
-        ];
+        if (isset($post)) {
 
-        return $this->render('views/post.php', $properties);
+            $properties = [
+                'tags' => $tags,
+                'post' => $post[0]
+            ];
+
+            return $this->render('views/post.php', $properties);
+        }
+
+        return $this->redirect('/');
     }
 
     public function search(): string
@@ -97,7 +95,8 @@ class PostController extends AbstractController
         return $this->render('views/posts.php', $properties);
     }
 
-    public function getByUser(string $author) {
+    public function getByUser(string $author)
+    {
         $postModel = new PostModel();
         $posts = $postModel->getByUser($author);
         $tags = $postModel->getAllTags();
@@ -110,14 +109,15 @@ class PostController extends AbstractController
         return $this->render('views/posts.php', $properties);
     }
 
-    public function createPost() {
+    /** POST */
 
+    public function createPost()
+    {
         if ($this->request->isPost()) {
             $params = $this->request->getParams();
             $postModel = new PostModel();
             $tags = $postModel->getAllTags();
 
-             
             $postId = $postModel->createPost(
                 $params->get('title'),
                 $params->get('author'),
@@ -125,24 +125,40 @@ class PostController extends AbstractController
                 $params->get('type'),
                 $params->get('tags')
             );
-    
+
             return $this->redirect('/post/' . $postId);
         }
 
         $postModel = new PostModel();
 
-        $tags = $postModel->getAllTags(); 
+        $tags = $postModel->getAllTags();
 
-        return $this->render('views/makePost.php', ['tags' => $tags]);
-
+        return $this->render('views/admin/makePost.php', ['tags' => $tags]);
     }
 
-    public function editPost() {
-        
+    public function readPost($postId) {
+        $postModel = new PostModel();
+        $post = $postModel->getOne($postId);
+        $tags = $postModel->getAllTags();
+
+        if (isset($post)) {
+
+            $properties = [
+                'tags' => $tags,
+                'post' => $post[0]
+            ];
+
+            return $this->render('views/admin/editPost.php', $properties);
+        }
+    }
+
+    public function editPost()
+    {
         if ($this->request->isPost()) {
             $params = $this->request->getParams();
+
             $postModel = new PostModel();
-                
+
             $postId = $postModel->editPost(
                 $params->get('id'),
                 $params->get('title'),
@@ -151,20 +167,86 @@ class PostController extends AbstractController
                 $params->get('type'),
                 $params->get('tags')
             );
-    
+
             return $this->redirect('/');
         }
 
         return $this->redirect('/');
-
     }
 
-    public function deletePost() {
+    public function deletePost()
+    {
         if ($this->request->isPost()) {
             $params = $this->request->getParams();
             $postModel = new PostModel();
 
             $postModel->deletePost($params->get('post_id'));
+        }
+
+        return $this->redirect('/');
+    }
+
+    /** TAGS */
+
+    public function editTags() {
+        $postModel = new PostModel();
+        $tags = $postModel->getAllTags();
+
+        $properties = [
+            'tags' => $tags
+        ];
+
+        return $this->render('views/admin/editTags.php', $properties);
+    }
+
+    public function createTag() {
+        if ($this->request->isPost()) {
+            $params = $this->request->getParams();
+            $postModel = new PostModel();
+
+            $postModel->createTag(
+                $params->get('tag_name')
+            );
+
+            return $this->redirect('/dashboard/tags');
+        }
+
+        return $this->redirect('/');
+    }
+
+    public function editTag(int $tagId) {
+        $postModel = new PostModel();
+        $tag = $postModel->getTag($tagId);
+
+        $properties = [
+            'tag' => $tag
+        ];
+
+        return $this->render('views/admin/editTag.php', $properties);
+    }
+
+    public function updateTag(int $tagId) {
+        if ($this->request->isPost()) {
+            $params = $this->request->getParams();
+            $postModel = new PostModel();
+
+            $postModel->updateTag(
+                $tagId,
+                $params->get('tag_name')
+            );
+
+            return $this->redirect('/dashboard/tags');
+        }
+
+        return $this->redirect('/');
+    }
+
+    public function deleteTag(int $tagId) {
+        if ($this->request->isGet()) {
+            $postModel = new PostModel();
+            $postModel->deleteTag($tagId);
+
+            return $this->redirect('/dashboard/tags');
         }
 
         return $this->redirect('/');

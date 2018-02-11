@@ -1,7 +1,7 @@
 <?php
 namespace Blog\Models;
 
-    
+
 use Blog\Domain\Entry;
 use Blog\Exceptions\NotFoundException;
 use PDO;
@@ -14,7 +14,7 @@ class PostModel extends AbstractModel
     public function getAllWithPage(int $page, int $pageLength): array
     {
         $start = $pageLength * ($page - 1);
-            
+
         $query = 'SELECT * FROM posts ORDER BY post_date DESC LIMIT :page, :length';
         $sth = $this->db->prepare($query);
         $sth->bindParam('page', $start, PDO::PARAM_INT);
@@ -105,7 +105,7 @@ SQL;
 FROM post_tags pt
 LEFT JOIN posts p ON pt.id_post = p.post_nr
 LEFT JOIN tags t ON pt.id_tag = t.tag_id
-WHERE pt.id_tag = :tag_id'; 
+WHERE pt.id_tag = :tag_id';
 
         $statement = $this->db->prepare($query);
         $statement->execute(['tag_id' => $tagId]);
@@ -121,10 +121,10 @@ WHERE pt.id_tag = :tag_id';
         $statement->bindValue(':author', $author);
         $statement->execute();
 
-        return $statement->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);   
+        return $statement->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
     }
 
-    public function createPost($post_title, $post_author, $post_text, $type, $tags = []) 
+    public function createPost($post_title, $post_author, $post_text, $type, $tags = [])
     {
         $query = 'INSERT INTO posts (post_title, post_author, post_text, type) VALUES (:post_title, :post_author, :post_text, :type)';
 
@@ -151,31 +151,31 @@ WHERE pt.id_tag = :tag_id';
         return $lastPostId;
     }
 
-    public function editPost($post_nr, $post_title, $post_author, $post_text, $type, $tags = []) 
+    public function editPost($post_nr, $post_title, $post_author, $post_text, $type, $tags = [])
     {
         $query = 'UPDATE posts SET post_title = :post_title, post_author = :post_author, post_text = :post_text, type = :type)
         WHERE post_nr = :post_nr';
-        
+
         $statement = $this->db->prepare($query);
+
+        $statement->bindValue(':post_nr', $post_nr);
         $statement->bindValue(':post_title', $post_title);
         $statement->bindValue(':post_author', $post_author);
         $statement->bindValue(':post_text', $post_text);
-        $statement->bindValue(':post_nr', $post_nr);
         $statement->bindValue(':type', $type);
 
         $statement->execute();
 
-        
+        // kolla ifall taggen med samma tag_id finns i post_tags if ()
+        $query = 'SELECT * FROM post_tags WHERE id_post = :id_post';
+        $statement = $this->db->prepare($query);
+        $statement->bindValue(':id_post', $post_nr);
+        $statement->execute();
 
-            // kolla ifall taggen med samma tag_id finns i post_tags if ()
-            $query = 'SELECT * FROM post_tags WHERE id_post = :id_post';
-            $statement = $this->db->prepare($query);
-            $statement->bindValue(':id_post', $post_nr);
-            $statement->execute();
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $i = 0;
 
-            $i = 0;
         foreach($tags as $tag) {
 
             if (isset($result[$i]['id_tag']) && $result[$i]['id_tag'] === $tag) {
@@ -206,7 +206,7 @@ WHERE pt.id_tag = :tag_id';
     {
 
         $query = 'DELETE FROM post_tags WHERE id_post = :post_nr';
-        
+
         $statement = $this->db->prepare($query);
         $statement->bindValue(':post_nr', $postId);
         $statement->execute();
@@ -223,5 +223,50 @@ WHERE pt.id_tag = :tag_id';
         $results = $this->db->query('SELECT * FROM tags');
 
         return $results->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getTag(int $tagId) {
+        $query = 'SELECT * FROM tags WHERE tag_id = :tag_id';
+
+        $statement = $this->db->prepare($query);
+        $statement->bindValue(':tag_id', $tagId);
+        $statement->execute();
+
+        $tag = $statement->fetch(PDO::FETCH_ASSOC);
+        return $tag;
+    }
+
+    public function createTag(string $tagName) {
+        $query = 'INSERT INTO tags (tag_name) VALUES (:tag_name)';
+
+        $statement = $this->db->prepare($query);
+        $statement->bindValue(':tag_name', $tagName);
+        $statement->execute();
+    }
+
+    public function updateTag(int $tagId, string $tagName) {
+        $query = 'UPDATE tags SET tag_name = :tag_name WHERE tag_id = :tag_id';
+
+        $statement = $this->db->prepare($query);
+        $statement->bindValue(':tag_name', $tagName);
+        $statement->bindValue(':tag_id', $tagId);
+        $statement->execute();
+
+        $statement->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function deleteTag(int $tagId) {
+        $query = 'DELETE FROM post_tags WHERE id_tag = :tag_id';
+
+        $statement = $this->db->prepare($query);
+        $statement->bindValue(':id_tag', $tagId);
+        $statement->execute();
+
+        $query = 'DELETE FROM tags WHERE tag_id = :tag_id';
+
+        $statement = $this->db->prepare($query);
+        $statement->bindValue(':tag_id', $tagId);
+
+        $statement->execute();
     }
 }

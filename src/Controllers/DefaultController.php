@@ -14,8 +14,7 @@ class DefaultController extends AbstractController
         $tags = $postModel->getAllTags();
 
         $properties = [
-            'tags' => $tags,
-            'title' => 'This is the title of the blog'
+            'tags' => $tags
         ];
 
         return $this->render('views/layout.php', $properties);

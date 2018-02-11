@@ -12,9 +12,9 @@
         </section>
         <div class="row">
             <div class="col-md-12">
-                <a href="http://localhost:8080/" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-home"></span>
+                <a href="/" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-home"></span>
                     Tillbaka till startisdan </a>
-                <a href="http://localhost:8080/" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-envelope"></span> Kontakta support</a>
+                <a href="/" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-envelope"></span> Kontakta support</a>
             </div>
         </div>
     </div>

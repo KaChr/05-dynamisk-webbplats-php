@@ -32,7 +32,7 @@ class Router {
     }
 
     private function getRegexRoute(string $route, array $info): string {
-        if (isset($info['params'])) {            
+        if (isset($info['params'])) {
             foreach ($info['params'] as $name => $type) {
                 $route = str_replace(':' . $name, self::$regexPatterns[$type], $route);
             }

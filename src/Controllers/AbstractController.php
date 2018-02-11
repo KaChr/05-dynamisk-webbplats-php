@@ -18,7 +18,12 @@ abstract class AbstractController
         extract($paramsToInclude);
 
         ob_start();
+
+        include 'templates/navigation.html';
+        include 'templates/header.html';
         include $viewPath;
+        include 'templates/footer.html';
+
         $renderedView = ob_get_clean();
 
         return $renderedView;
