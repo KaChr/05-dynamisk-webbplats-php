@@ -1,0 +1,9 @@
+.vagrant/
+config/app.json
+.DS_Store
+.gitignore
+db.txt
+*.sql
+provisioner.sh
+README.md
+Vagrantfile
