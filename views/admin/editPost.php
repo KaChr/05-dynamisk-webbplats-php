@@ -38,6 +38,7 @@
 
 <script>
     function save() {
+        debugger;
         $('textarea[name="text"]') = $('#summernote').summernote('code');
     }
 </script>
