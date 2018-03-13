@@ -1,7 +1,7 @@
 {
     "db": {
-        "dsn": "mysql:host=blogg-226753.mysql.binero.se;dbname=226753-blogg",        
+        "dsn": "mysql:host=blogg-226753.mysql.binero.se;dbname=226753-blogg",
         "user": "226753_in84656",
-        "password": "abcd1234"
+        "password": " "
     }
 }
