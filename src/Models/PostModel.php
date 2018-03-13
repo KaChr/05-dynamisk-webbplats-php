@@ -1,31 +1,34 @@
 <?php
 namespace Blog\Models;
 
-
 use Blog\Domain\Entry;
 use Blog\Exceptions\NotFoundException;
 use PDO;
 
 class PostModel extends AbstractModel
 {
-
     const CLASSNAME = '\Blog\Domain\Entry';
 
     public function getAllWithPage(int $page, int $pageLength): array
     {
         $start = $pageLength * ($page - 1);
 
-        $query = 'SELECT * FROM posts ORDER BY post_date DESC LIMIT :page, :length';
+        $query = 'SELECT p.*, CONCAT(u.firstname, " ", u.surname) as post_author_fullname FROM
+        posts p LEFT JOIN user u ON u.user_id = p.post_author
+        ORDER BY post_date DESC LIMIT :page, :length';
+
         $sth = $this->db->prepare($query);
         $sth->bindParam('page', $start, PDO::PARAM_INT);
         $sth->bindParam('length', $pageLength, PDO::PARAM_INT);
         $sth->execute();
 
-        return $sth->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
+        $row = $sth->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
 
         if (empty($row)) {
             throw new NotFoundException();
         }
+
+        return $row;
     }
 
     public function getAll(): array
@@ -34,23 +37,29 @@ class PostModel extends AbstractModel
         $sth = $this->db->prepare($query);
         $sth->execute();
 
-        return $sth->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
+        $row = $sth->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
 
         if (empty($row)) {
             throw new NotFoundException();
         }
+
+        return $row;
     }
 
-    public function getAllWithTags(int $page, int $pageLength) {
+    public function getAllWithTags(int $page, int $pageLength)
+    {
         $start = $pageLength * ($page - 1);
 
         $query = 'SELECT posts.*,
-                        GROUP_CONCAT(tags.tag_name ORDER BY tags.tag_name) AS tags
+                        GROUP_CONCAT(tags.tag_name ORDER BY tags.tag_name) AS tags,
+                        CONCAT(user.firstname, " ", user.surname) AS post_author_fullname
                     FROM posts
                     LEFT JOIN post_tags
                         ON posts.post_nr = post_tags.id_post
                     LEFT JOIN tags
                         ON post_tags.id_tag = tags.tag_id
+                    LEFT JOIN user
+                        ON user.user_id = posts.post_author
                     GROUP BY posts.post_nr
                     ORDER BY post_date DESC LIMIT :page, :length';
 
@@ -64,9 +73,19 @@ class PostModel extends AbstractModel
         return $results;
     }
 
-    public function getOne(int $id): Array
+    public function getOne(int $id): array
     {
-        $query = 'SELECT * FROM posts WHERE post_nr = :post_nr';
+        $query = 'SELECT posts.*,
+                    GROUP_CONCAT(tags.tag_name ORDER BY tags.tag_name) AS tags,
+                    CONCAT(user.firstname, " ", user.surname) AS post_author_fullname
+                    FROM posts
+                    LEFT JOIN post_tags
+                        ON posts.post_nr = post_tags.id_post
+                    LEFT JOIN tags
+                        ON post_tags.id_tag = tags.tag_id
+                    LEFT JOIN user
+                        ON user.user_id = posts.post_author
+                    WHERE post_nr = :post_nr';
         $statement = $this->db->prepare($query);
 
         $statement->bindValue(':post_nr', $id);
@@ -77,10 +96,23 @@ class PostModel extends AbstractModel
 
     public function search(string $searchString): array
     {
-        $query = <<<SQL
-SELECT * FROM posts
-WHERE post_title LIKE :searchString OR post_author LIKE :searchString
-SQL;
+        $query = 'SELECT posts.*,
+                    GROUP_CONCAT(tags.tag_name ORDER BY tags.tag_name) AS tags,
+                    CONCAT(user.firstname, " ", user.surname) AS post_author_fullname
+                    FROM posts
+                    LEFT JOIN post_tags
+                        ON posts.post_nr = post_tags.id_post
+                    LEFT JOIN tags
+                        ON post_tags.id_tag = tags.tag_id
+                    LEFT JOIN user
+                        ON user.user_id = posts.post_author
+                    WHERE post_title
+                        LIKE :searchString
+                    OR post_text
+                        LIKE :searchString
+                    OR post_author
+                        LIKE :searchString';
+
         $sth = $this->db->prepare($query);
         $sth->bindValue('searchString', "%$searchString%");
         $sth->execute();
@@ -90,7 +122,18 @@ SQL;
 
     public function getByType(string $type)
     {
-        $sql = 'SELECT * FROM posts WHERE type = :type';
+        $sql = 'SELECT posts.*,
+                    GROUP_CONCAT(tags.tag_name ORDER BY tags.tag_name) AS tags,
+                    CONCAT(user.firstname, " ", user.surname) AS post_author_fullname
+                    FROM posts
+                    LEFT JOIN post_tags
+                        ON posts.post_nr = post_tags.id_post
+                    LEFT JOIN tags
+                        ON post_tags.id_tag = tags.tag_id
+                    LEFT JOIN user
+                        ON user.user_id = posts.post_author
+                    WHERE type = :type
+                    GROUP BY :type';
 
         $sth = $this->db->prepare($sql);
         $sth->bindValue(':type', $type);
@@ -101,11 +144,13 @@ SQL;
 
     public function getByTags(int $tagId)
     {
-        $query = 'SELECT p.post_nr, p.post_title, p.post_author, p.post_date, p.post_text, p.type, t.tag_id, t.tag_name
-FROM post_tags pt
-LEFT JOIN posts p ON pt.id_post = p.post_nr
-LEFT JOIN tags t ON pt.id_tag = t.tag_id
-WHERE pt.id_tag = :tag_id';
+        $query = 'SELECT p.*, t.tag_id, t.tag_name,
+                    CONCAT(u.firstname, " ", u.surname) as post_author_fullname
+                    FROM post_tags pt
+                    LEFT JOIN posts p ON pt.id_post = p.post_nr
+                    LEFT JOIN tags t ON pt.id_tag = t.tag_id
+                    LEFT JOIN user u ON p.post_author = u.user_id
+                    WHERE pt.id_tag = :tag_id';
 
         $statement = $this->db->prepare($query);
         $statement->execute(['tag_id' => $tagId]);
@@ -115,7 +160,18 @@ WHERE pt.id_tag = :tag_id';
 
     public function getByUser(string $author)
     {
-        $query = 'SELECT * FROM posts WHERE post_author = :author';
+        $query = 'SELECT posts.*,
+                    GROUP_CONCAT(tags.tag_name ORDER BY tags.tag_name) AS tags,
+                    CONCAT(user.firstname, " ", user.surname) AS post_author_fullname
+                    FROM posts
+                    LEFT JOIN post_tags
+                        ON posts.post_nr = post_tags.id_post
+                    LEFT JOIN tags
+                        ON post_tags.id_tag = tags.tag_id
+                    LEFT JOIN user
+                        ON user.user_id = posts.post_author
+                    WHERE post_author = :author';
+
         $statement = $this->db->prepare($query);
 
         $statement->bindValue(':author', $author);
@@ -138,7 +194,7 @@ WHERE pt.id_tag = :tag_id';
 
         $lastPostId = $this->db->lastInsertId();
 
-        foreach($tags as $tag) {
+        foreach ($tags as $tag) {
             $sql = 'INSERT INTO post_tags (id_post, id_tag) VALUES (:id_post, :id_tag)';
 
             $statement = $this->db->prepare($sql);
@@ -153,8 +209,8 @@ WHERE pt.id_tag = :tag_id';
 
     public function editPost($post_nr, $post_title, $post_author, $post_text, $type, $tags = [])
     {
-        $query = 'UPDATE posts SET post_title = :post_title, post_author = :post_author, post_text = :post_text, type = :type)
-        WHERE post_nr = :post_nr';
+        $query = 'UPDATE posts
+                    SET post_title = :post_title, post_author = :post_author, post_text = :post_text, type = :type WHERE post_nr = :post_nr';
 
         $statement = $this->db->prepare($query);
 
@@ -164,7 +220,9 @@ WHERE pt.id_tag = :tag_id';
         $statement->bindValue(':post_text', $post_text);
         $statement->bindValue(':type', $type);
 
-        $statement->execute();
+        if (!$statement->execute()) {
+            throw \Exception('AAAAAH');
+        }
 
         // kolla ifall taggen med samma tag_id finns i post_tags if ()
         $query = 'SELECT * FROM post_tags WHERE id_post = :id_post';
@@ -176,8 +234,7 @@ WHERE pt.id_tag = :tag_id';
 
         $i = 0;
 
-        foreach($tags as $tag) {
-
+        foreach ($tags as $tag) {
             if (isset($result[$i]['id_tag']) && $result[$i]['id_tag'] === $tag) {
                 continue;
             }
@@ -204,7 +261,6 @@ WHERE pt.id_tag = :tag_id';
 
     public function deletePost(int $postId)
     {
-
         $query = 'DELETE FROM post_tags WHERE id_post = :post_nr';
 
         $statement = $this->db->prepare($query);
@@ -219,13 +275,15 @@ WHERE pt.id_tag = :tag_id';
         $statement->execute();
     }
 
-    public function getAllTags() {
+    public function getAllTags()
+    {
         $results = $this->db->query('SELECT * FROM tags');
 
         return $results->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getTag(int $tagId) {
+    public function getTag(int $tagId)
+    {
         $query = 'SELECT * FROM tags WHERE tag_id = :tag_id';
 
         $statement = $this->db->prepare($query);
@@ -236,7 +294,8 @@ WHERE pt.id_tag = :tag_id';
         return $tag;
     }
 
-    public function createTag(string $tagName) {
+    public function createTag(string $tagName)
+    {
         $query = 'INSERT INTO tags (tag_name) VALUES (:tag_name)';
 
         $statement = $this->db->prepare($query);
@@ -244,7 +303,8 @@ WHERE pt.id_tag = :tag_id';
         $statement->execute();
     }
 
-    public function updateTag(int $tagId, string $tagName) {
+    public function updateTag(int $tagId, string $tagName)
+    {
         $query = 'UPDATE tags SET tag_name = :tag_name WHERE tag_id = :tag_id';
 
         $statement = $this->db->prepare($query);
@@ -255,7 +315,8 @@ WHERE pt.id_tag = :tag_id';
         $statement->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function deleteTag(int $tagId) {
+    public function deleteTag(int $tagId)
+    {
         $query = 'DELETE FROM post_tags WHERE id_tag = :tag_id';
 
         $statement = $this->db->prepare($query);

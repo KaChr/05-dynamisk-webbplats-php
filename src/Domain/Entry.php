@@ -3,10 +3,11 @@
 namespace Blog\Domain;
 
 class Entry {
-    
+
     private $post_nr;
     private $post_title;
     private $post_author;
+    private $post_author_fullname;
     private $post_date;
     private $tags = [];
     private $post_text;
@@ -22,9 +23,14 @@ class Entry {
         return $this->post_title;
     }
 
-    public function getAuthor(): string
+    public function getAuthorId(): int
     {
         return $this->post_author;
+    }
+
+    public function getAuthor(): string
+    {
+        return $this->post_author_fullname;
     }
 
     public function getDate()
@@ -43,7 +49,7 @@ class Entry {
         }
 
         return [];
-        
+
     }
 
     public function getText(): string

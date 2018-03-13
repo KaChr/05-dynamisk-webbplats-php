@@ -60,6 +60,7 @@ class PostController extends AbstractController
         $tags = $postModel->getAllTags();
 
         $properties = [
+            'message' => 'Showing search results for: ' . $searchString,
             'tags' => $tags,
             'posts' => $posts
         ];
@@ -88,6 +89,7 @@ class PostController extends AbstractController
         $tags = $postModel->getAllTags();
 
         $properties = [
+            'message' => 'Showing posts for tag',
             'tags' => $tags,
             'posts' => $posts
         ];
